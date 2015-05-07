@@ -11,6 +11,7 @@ namespace OOPExam.Linesystem
     public SeasonalProduct(int productid, string productname, int price) : base(productid, productname, price){}
     public DateTimeOffset SeasonStartDate;
     public DateTimeOffset SeasonEndDate;
-    public override bool Active { get { return DateTimeOffset.UtcNow >= SeasonStartDate && DateTimeOffset.UtcNow <= SeasonEndDate; } }
+    public override bool Active { get { return (DateTimeOffset.UtcNow >= SeasonStartDate || SeasonStartDate == null) &&
+                                               (DateTimeOffset.UtcNow <= SeasonEndDate || SeasonStartDate == null); } }
   }
 }

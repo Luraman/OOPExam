@@ -21,8 +21,8 @@ namespace OOPExam.Linesystem
       }
 
       static int userCount = 0;
-      static string usernameValidator = "^[0-9a-z_]*$";
-      static string emailValidator = "^[0-9a-z_-.]+@[0-9a-z][0-9a-z\x2D]*.[0-9a-z\x2D]*[0-9a-z]$";
+      static readonly string usernameValidator = "^[0-9a-z_]*$";
+      static readonly string emailValidator = "^[0-9a-z_-.]+@[0-9a-z][0-9a-z\x2D]*.[0-9a-z\x2D]*[0-9a-z]$";
 
       public static string ValidateNewUser(string firstname, string lastname, string username, string email)
       {
