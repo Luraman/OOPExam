@@ -8,6 +8,14 @@ namespace OOPExam.Linesystem
 {
   class Product
   {
+    public Product(int productid, string productname, int price)
+    {
+      ProductID = productid;
+      ProductName = productname;
+      Price = price;
+      Active = true;
+      CanBeBoughtOnCredit = false;
+    }
     public int ProductID
     {
       get { return ProductID; }
@@ -24,7 +32,7 @@ namespace OOPExam.Linesystem
       {
         if (!String.IsNullOrWhiteSpace(value)) ProductName = value;
         else throw new ArgumentException();
-      } 
+      }
     }
     public int Price
     {
@@ -35,7 +43,7 @@ namespace OOPExam.Linesystem
         else throw new ArgumentOutOfRangeException();
       } 
     }
-    public bool Active = true;
+    public virtual bool Active { get; set; }
     public bool CanBeBoughtOnCredit = false;
 
   }

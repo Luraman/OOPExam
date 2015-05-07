@@ -44,6 +44,7 @@
     <Compile Include="LinesystemCLI\LinesystemCLI.cs" />
     <Compile Include="Linesystem\Linesystem.cs" />
     <Compile Include="Linesystem\Product.cs" />
+    <Compile Include="Linesystem\SeasonalProduct.cs" />
     <Compile Include="Linesystem\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
