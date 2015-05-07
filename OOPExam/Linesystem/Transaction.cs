@@ -2,23 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  class Transaction
+  public partial class Linesystem
   {
-    static int IDCount = 0;
-
-    public int TransactionID { get; private set; }
-    public User TransactionUser
+    abstract class Transaction
     {
-      get { return TransactionUser; }
-      set
+      static int IDCount = 0;
+
+      public int TransactionID { get; private set; }
+      public User TransactionUser
       {
-        if (value != null) TransactionUser = value;
-        else throw new ArgumentException();
+        get { return TransactionUser; }
+        set
+        {
+          if (value != null) TransactionUser = value;
+          else throw new ArgumentNullException();
+        }
       }
+      public DateTimeOffset Date
+      {
+        get { return Date; }
+        set
+        {
+          if (value != null) Date = value;
+          else throw new ArgumentNullException();
+        }
+      }
+      public int Amount;
+      public override string ToString()
+      {
+        return String.Join(" ", TransactionID, Amount, Date);
+      }
+      public abstract void Execute();
     }
   }
 }

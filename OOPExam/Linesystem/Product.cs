@@ -6,45 +6,47 @@ using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  class Product
+  public partial class Linesystem
   {
-    public Product(int productid, string productname, int price)
+    class Product
     {
-      ProductID = productid;
-      ProductName = productname;
-      Price = price;
-      Active = true;
-      CanBeBoughtOnCredit = false;
-    }
-    public int ProductID
-    {
-      get { return ProductID; }
-      set
+      public Product(int productid, string productname, int price)
       {
-        if (value >= 1) ProductID = value;
-        else throw new ArgumentOutOfRangeException();
+        ProductID = productid;
+        ProductName = productname;
+        Price = price;
+        Active = true;
+        CanBeBoughtOnCredit = false;
       }
-    }
-    public string ProductName
-    {
-      get { return ProductName; }
-      set
+      public int ProductID
       {
-        if (!String.IsNullOrWhiteSpace(value)) ProductName = value;
-        else throw new ArgumentException();
+        get { return ProductID; }
+        set
+        {
+          if (value >= 1) ProductID = value;
+          else throw new ArgumentOutOfRangeException();
+        }
       }
-    }
-    public int Price
-    {
-      get { return Price; } 
-      set
+      public string ProductName
       {
-        if (value >= 0) Price = value;
-        else throw new ArgumentOutOfRangeException();
-      } 
+        get { return ProductName; }
+        set
+        {
+          if (!String.IsNullOrWhiteSpace(value)) ProductName = value;
+          else throw new ArgumentException();
+        }
+      }
+      public int Price
+      {
+        get { return Price; } 
+        set
+        {
+          if (value >= 0) Price = value;
+          else throw new ArgumentOutOfRangeException();
+        } 
+      }
+      public virtual bool Active { get; set; }
+      public bool CanBeBoughtOnCredit = false;
     }
-    public virtual bool Active { get; set; }
-    public bool CanBeBoughtOnCredit = false;
-
   }
 }
