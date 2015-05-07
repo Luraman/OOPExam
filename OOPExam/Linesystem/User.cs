@@ -21,21 +21,55 @@ namespace OOPExam.Linesystem
       }
 
       static int userCount = 0;
+      static string usernameValidator = "^[0-9a-z_]*$";
+      static string emailValidator = "^[0-9a-z_-.]+@[0-9a-z][0-9a-z\x2D]*.[0-9a-z\x2D]*[0-9a-z]$";
 
       public static string ValidateNewUser(string firstname, string lastname, string username, string email)
       {
         if (String.IsNullOrWhiteSpace(firstname)) return "No firstname written";
         if (String.IsNullOrWhiteSpace(lastname)) return "No lastname written";
-        if (!Regex.IsMatch(username, "^[0-9a-z_]*$")) return "Username contains invalid characters";
-        if (!Regex.IsMatch(email, "^[0-9a-z_-.]+@[0-9a-z][0-9a-z\x2D]*.[0-9a-z\x2D]*[0-9a-z]$")) return "Invalid emailaddress";
+        if (!Regex.IsMatch(username, usernameValidator)) return "Username contains invalid characters";
+        if (!Regex.IsMatch(email, emailValidator)) return "Invalid emailaddress";
         return null;
       }
 
       public int UserID { get; private set; }
-      public string Firstname { get; private set; }
-      public string Lastname { get; private set; }
-      public string Username { get; private set; }
-      public string Email { get; private set; }
+      public string Firstname
+      {
+        get { return Firstname; }
+        set
+        {
+          if (!String.IsNullOrWhiteSpace(value)) Firstname = value;
+          else throw new ArgumentException();
+        }
+      }
+      public string Lastname
+      {
+        get { return Lastname; }
+        set
+        {
+          if (!String.IsNullOrWhiteSpace(value)) Lastname = value;
+          else throw new ArgumentException();
+        }
+      }
+      public string Username
+      {
+        get { return Username; }
+        set
+        {
+          if (Regex.IsMatch(value, usernameValidator)) Username = value;
+          else throw new ArgumentException();
+        }
+      }
+      public string Email
+      {
+        get { return Email; }
+        set
+        {
+          if (Regex.IsMatch(value, emailValidator)) Email = value;
+          else throw new ArgumentException();
+        }
+      }
       public int Balance { get; private set; }
 
       public override string ToString()
