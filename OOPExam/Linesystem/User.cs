@@ -70,7 +70,7 @@ namespace OOPExam.Linesystem
           else throw new ArgumentException();
         }
       }
-      public int Balance { get; private set; }
+      public int Balance;
 
       public override string ToString()
       {

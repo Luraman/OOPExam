@@ -42,6 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LinesystemCLI\LinesystemCLI.cs" />
+    <Compile Include="Linesystem\BuyTransaction.cs" />
+    <Compile Include="Linesystem\InsertCashTransaction.cs" />
+    <Compile Include="Linesystem\InactiveProductException.cs" />
+    <Compile Include="Linesystem\InsufficientCreditsException.cs" />
     <Compile Include="Linesystem\Linesystem.cs" />
     <Compile Include="Linesystem\Product.cs" />
     <Compile Include="Linesystem\SeasonalProduct.cs" />
