@@ -10,6 +10,8 @@ namespace OOPExam.Linesystem
   {
     class InsertCashTransaction : Transaction
     {
+      public InsertCashTransaction(User transactionuser, DateTimeOffset date, int amount)
+        : base(transactionuser, date, amount) {}
       public override string ToString()
       {
         return String.Format("{0}: {1} inserted {2} on {3}", TransactionID, TransactionUser, Amount, Date);

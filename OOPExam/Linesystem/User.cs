@@ -9,7 +9,7 @@ namespace OOPExam.Linesystem
 {
   public partial class Linesystem
   {
-    class User : IEqualityComparer<User>, IComparable<User>
+    public class User : IEqualityComparer<User>, IComparable<User>
     {
       public User(string firstname, string lastname, string username, string email)
       {
@@ -26,8 +26,8 @@ namespace OOPExam.Linesystem
 
       public static string ValidateNewUser(string firstname, string lastname, string username, string email)
       {
-        if (String.IsNullOrWhiteSpace(firstname)) return "No firstname written";
-        if (String.IsNullOrWhiteSpace(lastname)) return "No lastname written";
+        if (String.IsNullOrWhiteSpace(firstname)) return "Missing firstname";
+        if (String.IsNullOrWhiteSpace(lastname)) return "Missing lastname";
         if (!Regex.IsMatch(username, usernameValidator)) return "Username contains invalid characters";
         if (!Regex.IsMatch(email, emailValidator)) return "Invalid emailaddress";
         return null;

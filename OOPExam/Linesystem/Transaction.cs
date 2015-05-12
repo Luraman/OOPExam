@@ -11,9 +11,16 @@ namespace OOPExam.Linesystem
   {
     abstract class Transaction
     {
-      static int IDCount = 0;
+      protected Transaction(User transactionuser, DateTimeOffset date, int amount)
+      {
+        TransactionID = CreateID();
+        TransactionUser = transactionuser;
+        Date = date;
+        Amount = amount;
+      }
+      private static int IDCount = 0;
 
-      public int TransactionID { get; private set; }
+      public int TransactionID { get; protected set; }
       public User TransactionUser
       {
         get { return TransactionUser; }
@@ -33,6 +40,11 @@ namespace OOPExam.Linesystem
         }
       }
       public int Amount;
+
+      protected int CreateID()
+      {
+        return IDCount++;
+      }
       public override string ToString()
       {
         return String.Join(" ", TransactionID, Amount, Date);

@@ -10,6 +10,8 @@ namespace OOPExam.Linesystem
   {
     class BuyTransaction : Transaction
     {
+      public BuyTransaction(User transactionuser, DateTimeOffset date, int amount)
+        : base(transactionuser, date, amount) {}
       public Product TransactionProduct;
 
       public override string ToString()
