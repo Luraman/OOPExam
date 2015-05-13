@@ -43,9 +43,6 @@ namespace OOPExam.LinesystemCLI
         input => adminInputStrStrStrStr.IsMatch(input))
       );
     }
-    LineSystem LS;
-    string[] adminInput = new string[16];
-    Dictionary<string, Tuple<Action, Predicate<string>>> adminCommands = new Dictionary<string, Tuple<Action, Predicate<string>>>();
 
     readonly static Regex quickbuy = new Regex(@"^[0-9a-zA-Z_]* [0-9]*$");
     readonly static Regex userinfo = new Regex(@"^[0-9a-zA-Z_]*$");
@@ -54,6 +51,11 @@ namespace OOPExam.LinesystemCLI
     readonly static Regex adminInputInt = new Regex(@"^[^ ]* [0-9]*$");
     readonly static Regex adminInputStrInt = new Regex(@"^[^ ]* [^ ]* [0-9]*$");
     readonly static Regex adminInputStrStrStrStr = new Regex(@"^[^ ]* [^ ]* [^ ]* [^ ]* [^ ]*$");
+
+    LineSystem LS;
+    Dictionary<string, Tuple<Action, Predicate<string>>> adminCommands = new Dictionary<string, Tuple<Action, Predicate<string>>>();
+    string[] adminInput = new string[16];
+
     public bool ParseInput(string input){
       if (admin.IsMatch(input))
       {

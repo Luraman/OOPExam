@@ -21,6 +21,7 @@ namespace OOPExam.Linesystem
       nextTransactionId = transactioncount;
       nextUserId = usercount;
     }
+
     public LineSystem(ILineSystemUI ui, string catalogfileaddress) : this(ui, catalogfileaddress, 0, 0) { }
 
     public ILineSystemUI UI;
@@ -33,12 +34,57 @@ namespace OOPExam.Linesystem
     Dictionary<int, Product> Products = new Dictionary<int, Product>();
     Dictionary<int, Transaction> Transactions = new Dictionary<int, Transaction>();
 
-    string ValidatePurchase(User user, Product product)
+    public void GetUserInfo(string username)
     {
-      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return string.Format("{0} has insufficient balance. ({1} credits required)", user.Username, product.Price);
-      if (!product.Active) return string.Format("Product: \"{0} (id:{1})\" isn't available", product.Name, product.ID);
-      return null;
+      User user = GetUser(username);
+      if (user == null) return;
+      UI.DisplayUserInfo(user.Username, user.Firstname, user.Lastname, user.Balance,
+        Transactions.Select(kvp => kvp.Value)
+        .Where(transaction => transaction.User == user)
+        .Take(10)
+        .Select(transaction => transaction.ToString())
+        .ToList()
+        );
+      CheckForLowBalance(user);
     }
+
+    public void BuyMultipleProduct(string username, int productid, int multiple)
+    {
+      User user = GetUser(username);
+      if (user == null) return;
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      if (user.Balance < product.Price * multiple)
+      {
+        UI.DisplayError(string.Format("{0} has insufficient balance ({1} credits required)", user.Username, product.Price * multiple));
+        return;
+      }
+      for (int transactionCount = 0; transactionCount < multiple; transactionCount++) BuyProduct(user, product);
+    }
+
+    public void Close()
+    {
+      logfile.Close();
+      UI.Close();
+    }
+
+    public void SetProductActive(int productid, bool active)
+    {
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      product.Active = active;
+      UI.DisplayUpdatedProduct(product.Name, product.ID);
+    }
+
+    public void SetProductCredit(int productid, bool active)
+    {
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      product.CanBeBoughtOnCredit = active;
+      UI.DisplayUpdatedProduct(product.Name, product.ID);
+    }
+
+
     public void BuyProduct(string username, int productid)
     {
       User user = GetUser(username);
@@ -53,39 +99,14 @@ namespace OOPExam.Linesystem
       }
       BuyProduct(user, product);
     }
-    void BuyProduct(User user, Product product)
-    {
-      ExecuteTransaction(new BuyTransaction(nextTransactionId++, user, product));
-      UI.DisplayUserBoughtProduct(user.Username, product.Name, product.ID);
-      CheckForLowBalance(user);
-    }
-    void CheckForLowBalance(User user)
-    {
-      if (user.Balance <= 5000) UI.DisplayUserLowBalance(user.Username, user.Balance);
-    }
+
     public void AddCreditsToUser(string username, int amount)
     {
       User user = GetUser(username);
       if (user == null) return;
       AddCreditsToUser(user, amount);
     }
-    void AddCreditsToUser(User user, int amount)
-    {
-      ExecuteTransaction(new InsertCashTransaction(nextTransactionId++, user, amount));
-      UI.DisplayAddCredits(user.Username, amount);
-    }
-    void ExecuteTransaction(Transaction transaction)
-    {
-      transaction.Execute();
-      Transactions.Add(transaction.ID, transaction);
-      logfile.WriteLine(transaction);
-    }
-    Product GetProduct(int id)
-    {
-      Product product = Products.Select(kvp => kvp.Value).FirstOrDefault(iproduct => iproduct.ID == id);
-      if (product == null) UI.DisplayError(string.Format("Productid: {0} wasn't found", id));
-      return product;
-    }
+
     public void AddUser(string firstname, string lastname, string username, string email)
     {
       string validation = User.ValidateUser(firstname, lastname, username, email);
@@ -97,30 +118,14 @@ namespace OOPExam.Linesystem
       Users.Add(nextUserId, new User(nextUserId++, firstname, lastname, username, email));
       UI.DisplayAddUser(username);
     }
-    User GetUser(string username)
-    {
-      User user = Users.Select(kvp => kvp.Value).FirstOrDefault(iuser => iuser.Username == username);
-      if (user == null) UI.DisplayError(string.Format("User: \"{0}\" wasn't found", username));
-      return user;
-    }
-    List<Transaction> GetUserTransactions(User user)
-    {
-      return Transactions.Select(kvp => kvp.Value).Where(transaction => transaction.User == user).ToList();
-    }
+
     public void OutputActiveProducts()
     {
       UI.DisplayProducts(GetActiveProducts().Select(product => product.ToString()).ToList());
     }
-    List<Product> GetActiveProducts()
+
+    public void AddProduct(int id, string name, int price)
     {
-      return Products.Select(kvp => kvp.Value).Where(product => product.Active).ToList();
-    }
-    string ValidateProduct(int id, string name, int price)
-    {
-      if (id < nextProductId && Products.ContainsKey(id)) return "Id already in use";
-      return Product.ValidateProduct(name, price);
-    }
-    public void AddProduct(int id, string name, int price) {
       string validation = ValidateProduct(id, name, price);
       if (validation != null)
       {
@@ -130,10 +135,74 @@ namespace OOPExam.Linesystem
       Products.Add(id, new Product(id, name, price));
       if (id >= nextProductId) nextProductId = id + 1;
     }
+
     public void AddProduct(string name, int price)
     {
       AddProduct(nextProductId, name, price);
     }
+
+    string ValidatePurchase(User user, Product product)
+    {
+      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return string.Format("{0} has insufficient balance. ({1} credits required)", user.Username, product.Price);
+      if (!product.Active) return string.Format("Product: \"{0} (id:{1})\" isn't available", product.Name, product.ID);
+      return null;
+    }
+
+    void BuyProduct(User user, Product product)
+    {
+      ExecuteTransaction(new BuyTransaction(nextTransactionId++, user, product));
+      UI.DisplayUserBoughtProduct(user.Username, product.Name, product.ID);
+      CheckForLowBalance(user);
+    }
+
+    void CheckForLowBalance(User user)
+    {
+      if (user.Balance <= 5000) UI.DisplayUserLowBalance(user.Username, user.Balance);
+    }
+
+    void AddCreditsToUser(User user, int amount)
+    {
+      ExecuteTransaction(new InsertCashTransaction(nextTransactionId++, user, amount));
+      UI.DisplayAddCredits(user.Username, amount);
+    }
+
+    void ExecuteTransaction(Transaction transaction)
+    {
+      transaction.Execute();
+      Transactions.Add(transaction.ID, transaction);
+      logfile.WriteLine(transaction);
+    }
+
+    Product GetProduct(int id)
+    {
+      Product product = Products.Select(kvp => kvp.Value).FirstOrDefault(iproduct => iproduct.ID == id);
+      if (product == null) UI.DisplayError(string.Format("Productid: {0} wasn't found", id));
+      return product;
+    }
+
+    User GetUser(string username)
+    {
+      User user = Users.Select(kvp => kvp.Value).FirstOrDefault(iuser => iuser.Username == username);
+      if (user == null) UI.DisplayError(string.Format("User: \"{0}\" wasn't found", username));
+      return user;
+    }
+
+    List<Transaction> GetUserTransactions(User user)
+    {
+      return Transactions.Select(kvp => kvp.Value).Where(transaction => transaction.User == user).ToList();
+    }
+    
+    List<Product> GetActiveProducts()
+    {
+      return Products.Select(kvp => kvp.Value).Where(product => product.Active).ToList();
+    }
+    
+    string ValidateProduct(int id, string name, int price)
+    {
+      if (id < nextProductId && Products.ContainsKey(id)) return "Id already in use";
+      return Product.ValidateProduct(name, price);
+    }
+    
     string ImportProducts(string fileaddress)
     {
       var tagRemover = new Regex("<.*?>");
@@ -157,51 +226,6 @@ namespace OOPExam.Linesystem
       Products = Products.Concat(addedProducts).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
       if (addedNextProductId > nextProductId) nextProductId = addedNextProductId;
       return null;
-    }
-    public void GetUserInfo(string username)
-    {
-      User user = GetUser(username);
-      if (user == null) return;
-      UI.DisplayUserInfo(user.Username, user.Firstname, user.Lastname, user.Balance,
-        Transactions.Select(kvp => kvp.Value)
-        .Where(transaction => transaction.User == user)
-        .Take(10)
-        .Select(transaction => transaction.ToString())
-        .ToList()
-        );
-      CheckForLowBalance(user);
-    }
-    public void BuyMultipleProduct(string username, int productid, int multiple)
-    {
-      User user = GetUser(username);
-      if (user == null) return;
-      Product product = GetProduct(productid);
-      if (product == null) return;
-      if (user.Balance < product.Price * multiple)
-      {
-        UI.DisplayError(string.Format("{0} has insufficient balance ({1} credits required)", user.Username, product.Price * multiple));
-        return;
-      }
-      for (int transactionCount = 0; transactionCount < multiple; transactionCount++) BuyProduct(user, product);
-    }
-    public void Close()
-    {
-      logfile.Close();
-      UI.Close();
-    }
-    public void SetProductActive(int productid, bool active)
-    {
-      Product product = GetProduct(productid);
-      if (product == null) return;
-      product.Active = active;
-      UI.DisplayUpdatedProduct(product.Name, product.ID);
-    }
-    public void SetProductCredit(int productid, bool active)
-    {
-      Product product = GetProduct(productid);
-      if (product == null) return;
-      product.CanBeBoughtOnCredit = active;
-      UI.DisplayUpdatedProduct(product.Name, product.ID);
     }
   }
 }

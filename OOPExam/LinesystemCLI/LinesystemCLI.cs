@@ -10,14 +10,14 @@ namespace OOPExam.LinesystemCLI
   class LineSystemCLI : ILineSystemUI
   {
     bool running = true;
-    public LineSystemCLI() {}
+    public LineSystemCLI() { }
     LinesystemCommandParser LCP;
     public void Start()
     {
       while (running)
       {
         string input = Console.ReadLine();
-        if(!LCP.ParseInput(input)) DisplayError("Invalid input");
+        if (!LCP.ParseInput(input)) DisplayError("Invalid input");
       }
     }
 
