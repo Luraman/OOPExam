@@ -69,7 +69,7 @@ namespace OOPExam.LinesystemCLI
         string[] processedCommand = input.Split(' ');
         LS.BuyMultipleProduct(processedCommand[0], int.Parse(processedCommand[2]), int.Parse(processedCommand[1]));
       }
-      else if (input == "list") ;
+      else if (input == "list") LS.OutputActiveProducts();
       else return false;
       return true;
     }

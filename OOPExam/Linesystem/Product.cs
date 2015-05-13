@@ -54,6 +54,10 @@ namespace OOPExam.Linesystem
         if (price < 0) return "Price can't be negative";
         return null;
       }
+      public override string ToString()
+      {
+        return String.Format("{0}: {1} | Price: {2} credits", ID, Name, Price);
+      }
     }
   }
 }

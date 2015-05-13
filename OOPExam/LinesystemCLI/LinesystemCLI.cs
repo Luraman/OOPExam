@@ -56,5 +56,10 @@ namespace OOPExam.LinesystemCLI
       Console.Write("Username: {0}\nFullname: {1} {2}\nBalance: {3}\nLastest transactions:\n", username, firstname, lastname, balance);
       latesttransactions.ForEach(x => Console.WriteLine(x));
     }
+
+    public void DisplayProducts(List<string> products)
+    {
+      products.ForEach(x => Console.WriteLine(x));
+    }
   }
 }

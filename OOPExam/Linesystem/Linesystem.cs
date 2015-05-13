@@ -93,11 +93,15 @@ namespace OOPExam.Linesystem
     }
     List<Transaction> GetUserTransactions(User user)
     {
-      return Transactions.Select(x => x.Value).Where(x => x.User == user).ToList();
+      return Transactions.Select(kvp => kvp.Value).Where(transaction => transaction.User == user).ToList();
+    }
+    public void OutputActiveProducts()
+    {
+      UI.DisplayProducts(GetActiveProducts().Select(product => product.ToString()).ToList());
     }
     List<Product> GetActiveProducts()
     {
-      return Products.Select(x => x.Value).Where(x => x.Active).ToList();
+      return Products.Select(kvp => kvp.Value).Where(product => product.Active).ToList();
     }
     string ValidateProduct(int id, string name, int price)
     {
@@ -141,10 +145,10 @@ namespace OOPExam.Linesystem
       User user = GetUser(username);
       if (user == null) return;
       UI.DisplayUserInfo(user.Username, user.Firstname, user.Lastname, user.Balance,
-        Transactions.Select(x => x.Value)
-        .Where(x => x.User == user)
+        Transactions.Select(kvp => kvp.Value)
+        .Where(transaction => transaction.User == user)
         .Take(10)
-        .Select(x => x.ToString())
+        .Select(transaction => transaction.ToString())
         .ToList()
         );
       CheckForLowBalance(user);
