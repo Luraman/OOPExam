@@ -36,13 +36,13 @@ namespace OOPExam.LinesystemCLI
 
     public void DisplayUserBoughtProduct(string username, string productname, int productid)
     {
-      Console.WriteLine(String.Format("{0} successfully bought {1} (id:{2})"), username, productname, productid);
+      Console.WriteLine(String.Format(@"{0} successfully bought {1} (id:{2})", username, productname, productid));
     }
 
 
     public void DisplayUserLowBalance(string username, int balance)
     {
-      Console.WriteLine(String.Format("Warning: {0} only has {1} credit left on his/her account"), username, balance);
+      Console.WriteLine(String.Format("Warning: {0} only has {1} credit left on his/her account", username, balance));
     }
 
     public void Link(LineSystem LS)
@@ -60,6 +60,22 @@ namespace OOPExam.LinesystemCLI
     public void DisplayProducts(List<string> products)
     {
       products.ForEach(x => Console.WriteLine(x));
+    }
+
+
+    public void DisplayAddCredits(string username, int amount)
+    {
+      Console.WriteLine(String.Format("{0} credits successfully added to {1}", amount, username));
+    }
+
+    public void DisplayAddUser(string username)
+    {
+      Console.WriteLine(String.Format("{0} successfully added", username));
+    }
+
+    public void DisplayUpdatedProduct(string productname, int productid)
+    {
+      Console.WriteLine(String.Format("id {0}: \"{1}\" updated", productid, productname));
     }
   }
 }

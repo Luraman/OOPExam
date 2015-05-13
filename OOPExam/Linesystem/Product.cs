@@ -18,33 +18,9 @@ namespace OOPExam.Linesystem
         Active = true;
         CanBeBoughtOnCredit = false;
       }
-      public int ID
-      {
-        get { return ID; }
-        set
-        {
-          if (value >= 1) ID = value;
-          else throw new ArgumentOutOfRangeException();
-        }
-      }
-      public string Name
-      {
-        get { return Name; }
-        set
-        {
-          if (!String.IsNullOrWhiteSpace(value)) Name = value;
-          else throw new ArgumentException();
-        }
-      }
-      public int Price
-      {
-        get { return Price; } 
-        set
-        {
-          if (value >= 0) Price = value;
-          else throw new ArgumentOutOfRangeException();
-        } 
-      }
+      public int ID;
+      public string Name;
+      public int Price;
       public virtual bool Active { get; set; }
       public bool CanBeBoughtOnCredit = false;
 

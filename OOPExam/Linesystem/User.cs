@@ -20,8 +20,8 @@ namespace OOPExam.Linesystem
         Email = email;
       }
 
-      static readonly string usernameValidator = @"^[0-9a-z_]*$";
-      static readonly string emailValidator = @"^[0-9a-z_\x2D.]+@[0-9a-z][0-9a-z\x2D]*\x2E[0-9a-z\x2D]*[0-9a-z]$";
+      static readonly string usernameValidator = @"^[0-9a-zA-Z_]*$";
+      static readonly string emailValidator = @"^[0-9a-zA-Z_\x2D.]+@[0-9a-zA-Z][0-9a-zA-Z\x2D]*\x2E[0-9a-zA-Z\x2D]*[0-9a-zA-Z]$";
 
       public static string ValidateUser(string firstname, string lastname, string username, string email)
       {
@@ -33,42 +33,10 @@ namespace OOPExam.Linesystem
       }
 
       public int ID { get; private set; }
-      public string Firstname
-      {
-        get { return Firstname; }
-        set
-        {
-          if (!String.IsNullOrWhiteSpace(value)) Firstname = value;
-          else throw new ArgumentException();
-        }
-      }
-      public string Lastname
-      {
-        get { return Lastname; }
-        set
-        {
-          if (!String.IsNullOrWhiteSpace(value)) Lastname = value;
-          else throw new ArgumentException();
-        }
-      }
-      public string Username
-      {
-        get { return Username; }
-        set
-        {
-          if (Regex.IsMatch(value, usernameValidator)) Username = value;
-          else throw new ArgumentException();
-        }
-      }
-      public string Email
-      {
-        get { return Email; }
-        set
-        {
-          if (Regex.IsMatch(value, emailValidator)) Email = value;
-          else throw new ArgumentException();
-        }
-      }
+      public string Firstname;
+      public string Lastname;
+      public string Username;
+      public string Email;
       public int Balance;
 
       public override string ToString()

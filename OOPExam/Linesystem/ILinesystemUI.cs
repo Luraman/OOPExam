@@ -16,5 +16,8 @@ namespace OOPExam.Linesystem
     void DisplayUserLowBalance(string username, int balance);
     void DisplayUserInfo(string username, string firstname, string lastname, int balance, List<string> latesttransactions);
     void DisplayProducts(List<string> products);
+    void DisplayAddCredits(string username, int amount);
+    void DisplayAddUser(string username);
+    void DisplayUpdatedProduct(string productname, int productid);
   }
 }

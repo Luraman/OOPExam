@@ -27,7 +27,7 @@ namespace OOPExam.Linesystem
     System.IO.StreamWriter logfile = new System.IO.StreamWriter(String.Format(@"{0}\logfile.txt", System.Environment.CurrentDirectory));
     int nextTransactionId = 0;
     int nextUserId = 0;
-    int nextProductId = 0;
+    int nextProductId = 1;
 
     Dictionary<int, User> Users = new Dictionary<int, User>();
     Dictionary<int, Product> Products = new Dictionary<int, Product>();
@@ -72,6 +72,7 @@ namespace OOPExam.Linesystem
     void AddCreditsToUser(User user, int amount)
     {
       ExecuteTransaction(new InsertCashTransaction(nextTransactionId++, user, amount));
+      UI.DisplayAddCredits(user.Username, amount);
     }
     void ExecuteTransaction(Transaction transaction)
     {
@@ -81,13 +82,24 @@ namespace OOPExam.Linesystem
     }
     Product GetProduct(int id)
     {
-      Product product = Products.ElementAtOrDefault(id).Value;
+      Product product = Products.Select(kvp => kvp.Value).FirstOrDefault(iproduct => iproduct.ID == id);
       if (product == null) UI.DisplayError(string.Format("Productid: {0} wasn't found", id));
       return product;
     }
+    public void AddUser(string firstname, string lastname, string username, string email)
+    {
+      string validation = User.ValidateUser(firstname, lastname, username, email);
+      if (validation != null)
+      {
+        UI.DisplayError(validation);
+        return;
+      }
+      Users.Add(nextUserId, new User(nextUserId++, firstname, lastname, username, email));
+      UI.DisplayAddUser(username);
+    }
     User GetUser(string username)
     {
-      User user = Users.Select(x => x.Value).FirstOrDefault(x => x.Username == username);
+      User user = Users.Select(kvp => kvp.Value).FirstOrDefault(iuser => iuser.Username == username);
       if (user == null) UI.DisplayError(string.Format("User: \"{0}\" wasn't found", username));
       return user;
     }
@@ -108,17 +120,23 @@ namespace OOPExam.Linesystem
       if (id < nextProductId && Products.ContainsKey(id)) return "Id already in use";
       return Product.ValidateProduct(name, price);
     }
-    void AddProduct(int id, string name, int price) {
+    public void AddProduct(int id, string name, int price) {
+      string validation = ValidateProduct(id, name, price);
+      if (validation != null)
+      {
+        UI.DisplayError(validation);
+        return;
+      }
       Products.Add(id, new Product(id, name, price));
       if (id >= nextProductId) nextProductId = id + 1;
     }
-    void AddProduct(string name, int price)
+    public void AddProduct(string name, int price)
     {
       AddProduct(nextProductId, name, price);
     }
     string ImportProducts(string fileaddress)
     {
-      var tagRemover = new Regex("<.*>");
+      var tagRemover = new Regex("<.*?>");
       var addedProducts = new Dictionary<int, Product>();
       int addedNextProductId = 0;
 
@@ -136,7 +154,7 @@ namespace OOPExam.Linesystem
           rawData = catalog.ReadLine();
         }
       }
-      Products.Concat(addedProducts);
+      Products = Products.Concat(addedProducts).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
       if (addedNextProductId > nextProductId) nextProductId = addedNextProductId;
       return null;
     }
@@ -176,12 +194,14 @@ namespace OOPExam.Linesystem
       Product product = GetProduct(productid);
       if (product == null) return;
       product.Active = active;
+      UI.DisplayUpdatedProduct(product.Name, product.ID);
     }
     public void SetProductCredit(int productid, bool active)
     {
       Product product = GetProduct(productid);
       if (product == null) return;
       product.CanBeBoughtOnCredit = active;
+      UI.DisplayUpdatedProduct(product.Name, product.ID);
     }
   }
 }

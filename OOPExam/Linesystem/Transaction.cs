@@ -20,24 +20,8 @@ namespace OOPExam.Linesystem
       }
 
       public int ID { get; protected set; }
-      public User User
-      {
-        get { return User; }
-        set
-        {
-          if (value != null) User = value;
-          else throw new ArgumentNullException();
-        }
-      }
-      public DateTimeOffset Date
-      {
-        get { return Date; }
-        set
-        {
-          if (value != null) Date = value;
-          else throw new ArgumentNullException();
-        }
-      }
+      public User User;
+      public DateTimeOffset Date;
       public int Amount;
 
       public override string ToString()

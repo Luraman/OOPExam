@@ -18,7 +18,7 @@ namespace OOPExam.Linesystem
 
       public override string ToString()
       {
-        return String.Format("{0}: {1} bought {2} for {3} on {4}", ID, User, Product, Amount, Date);
+        return String.Format("{0}: {1} bought \"{2}\" for {3} credits on {4}", ID, User, Product, Amount, Date);
       }
       public override void Execute()
       {

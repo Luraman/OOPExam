@@ -14,7 +14,7 @@ namespace OOPExam.Linesystem
         : base(id, user, amount) {}
       public override string ToString()
       {
-        return String.Format("{0}: {1} inserted {2} on {3}", ID, User, Amount, Date);
+        return String.Format("{0}: {1} inserted {2} credits on {3}", ID, User, Amount, Date);
       }
       public override void Execute()
       {
