@@ -10,20 +10,22 @@ namespace OOPExam.Linesystem
   {
     class BuyTransaction : Transaction
     {
-      public BuyTransaction(User transactionuser, DateTimeOffset date, int amount)
-        : base(transactionuser, date, amount) {}
-      public Product TransactionProduct;
+      public BuyTransaction(int id, User user, Product product)
+        : base(id, user, product.Price) {
+          Product = product;
+      }
+      public Product Product;
 
       public override string ToString()
       {
-        return String.Format("{0}: {1} bought {2} for {3} on {4}", TransactionID, TransactionUser, TransactionProduct, Amount, Date);
+        return String.Format("{0}: {1} bought {2} for {3} on {4}", ID, User, Product, Amount, Date);
       }
       public override void Execute()
       {
-        if (!TransactionProduct.CanBeBoughtOnCredit && TransactionUser.Balance < Amount)
-          throw new InsufficientCreditsException(TransactionUser, TransactionProduct);
-        if (!TransactionProduct.Active) throw new InactiveProductException(TransactionProduct);
-        TransactionUser.Balance -= Amount;
+        if (!Product.CanBeBoughtOnCredit && User.Balance < Amount)
+          throw new InsufficientCreditsException(User, Product);
+        if (!Product.Active) throw new InactiveProductException(Product);
+        User.Balance -= Amount;
       }
     }
   }

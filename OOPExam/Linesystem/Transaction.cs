@@ -11,22 +11,21 @@ namespace OOPExam.Linesystem
   {
     abstract class Transaction
     {
-      protected Transaction(User transactionuser, DateTimeOffset date, int amount)
+      protected Transaction(int id, User user, int amount)
       {
-        TransactionID = CreateID();
-        TransactionUser = transactionuser;
-        Date = date;
+        ID = id;
+        User = user;
+        Date = DateTimeOffset.UtcNow;
         Amount = amount;
       }
-      private static int IDCount = 0;
 
-      public int TransactionID { get; protected set; }
-      public User TransactionUser
+      public int ID { get; protected set; }
+      public User User
       {
-        get { return TransactionUser; }
+        get { return User; }
         set
         {
-          if (value != null) TransactionUser = value;
+          if (value != null) User = value;
           else throw new ArgumentNullException();
         }
       }
@@ -41,13 +40,9 @@ namespace OOPExam.Linesystem
       }
       public int Amount;
 
-      protected int CreateID()
-      {
-        return IDCount++;
-      }
       public override string ToString()
       {
-        return String.Join(" ", TransactionID, Amount, Date);
+        return String.Join(" ", ID, Amount, Date);
       }
       public abstract void Execute();
     }

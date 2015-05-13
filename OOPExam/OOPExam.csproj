@@ -47,6 +47,7 @@
     <Compile Include="Linesystem\InactiveProductException.cs" />
     <Compile Include="Linesystem\InsufficientCreditsException.cs" />
     <Compile Include="Linesystem\Linesystem.cs" />
+    <Compile Include="LinesystemCLI\LinesystemCommandParser.cs" />
     <Compile Include="Linesystem\Product.cs" />
     <Compile Include="Linesystem\SeasonalProduct.cs" />
     <Compile Include="Linesystem\Transaction.cs" />

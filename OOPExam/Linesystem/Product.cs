@@ -10,29 +10,29 @@ namespace OOPExam.Linesystem
   {
     class Product
     {
-      public Product(int productid, string productname, int price)
+      public Product(int id, string name, int price)
       {
-        ProductID = productid;
-        ProductName = productname;
+        ID = id;
+        Name = name;
         Price = price;
         Active = true;
         CanBeBoughtOnCredit = false;
       }
-      public int ProductID
+      public int ID
       {
-        get { return ProductID; }
+        get { return ID; }
         set
         {
-          if (value >= 1) ProductID = value;
+          if (value >= 1) ID = value;
           else throw new ArgumentOutOfRangeException();
         }
       }
-      public string ProductName
+      public string Name
       {
-        get { return ProductName; }
+        get { return Name; }
         set
         {
-          if (!String.IsNullOrWhiteSpace(value)) ProductName = value;
+          if (!String.IsNullOrWhiteSpace(value)) Name = value;
           else throw new ArgumentException();
         }
       }
@@ -47,6 +47,13 @@ namespace OOPExam.Linesystem
       }
       public virtual bool Active { get; set; }
       public bool CanBeBoughtOnCredit = false;
+
+      public static string ValidateProduct(string name, int price)
+      {
+        if (String.IsNullOrWhiteSpace(name)) return "Missing name";
+        if (price < 0) return "Price can't be negative";
+        return null;
+      }
     }
   }
 }

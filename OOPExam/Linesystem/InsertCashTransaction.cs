@@ -10,15 +10,15 @@ namespace OOPExam.Linesystem
   {
     class InsertCashTransaction : Transaction
     {
-      public InsertCashTransaction(User transactionuser, DateTimeOffset date, int amount)
-        : base(transactionuser, date, amount) {}
+      public InsertCashTransaction(int id, User user, int amount)
+        : base(id, user, amount) {}
       public override string ToString()
       {
-        return String.Format("{0}: {1} inserted {2} on {3}", TransactionID, TransactionUser, Amount, Date);
+        return String.Format("{0}: {1} inserted {2} on {3}", ID, User, Amount, Date);
       }
       public override void Execute()
       {
-        TransactionUser.Balance += Amount;
+        User.Balance += Amount;
       }
     }
   }

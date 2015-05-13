@@ -11,20 +11,19 @@ namespace OOPExam.Linesystem
   {
     public class User : IEqualityComparer<User>, IComparable<User>
     {
-      public User(string firstname, string lastname, string username, string email)
+      public User(int id, string firstname, string lastname, string username, string email)
       {
-        UserID = userCount++;
+        ID = id;
         Firstname = firstname;
         Lastname = lastname;
         Username = username;
         Email = email;
       }
 
-      static int userCount = 0;
       static readonly string usernameValidator = "^[0-9a-z_]*$";
       static readonly string emailValidator = "^[0-9a-z_-.]+@[0-9a-z][0-9a-z\x2D]*.[0-9a-z\x2D]*[0-9a-z]$";
 
-      public static string ValidateNewUser(string firstname, string lastname, string username, string email)
+      public static string ValidateUser(string firstname, string lastname, string username, string email)
       {
         if (String.IsNullOrWhiteSpace(firstname)) return "Missing firstname";
         if (String.IsNullOrWhiteSpace(lastname)) return "Missing lastname";
@@ -33,7 +32,7 @@ namespace OOPExam.Linesystem
         return null;
       }
 
-      public int UserID { get; private set; }
+      public int ID { get; private set; }
       public string Firstname
       {
         get { return Firstname; }
@@ -79,17 +78,17 @@ namespace OOPExam.Linesystem
 
       public bool Equals(User x, User y)
       {
-        return x.UserID == y.UserID;
+        return x.ID == y.ID;
       }
 
       public int GetHashCode(User obj)
       {
-        return UserID;
+        return ID;
       }
 
       public int CompareTo(User user)
       {
-        return UserID - user.UserID;
+        return ID - user.ID;
       }
     }
   }
