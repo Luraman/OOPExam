@@ -16,6 +16,7 @@ namespace OOPExam.Linesystem
     }
     public Linesystem() : this(0, 0) {}
 
+    ILinesystemUI UI;
     System.IO.StreamWriter logfile = new System.IO.StreamWriter(@"Data\logfile.txt", true);
     int nextTransactionId = 0;
     int nextUserId = 0;
@@ -31,7 +32,21 @@ namespace OOPExam.Linesystem
       if (!product.Active) return "Product isn't available";
       return null;
     }
-
+    public void BuyProduct(string username, int productid)
+    {
+      User user = GetUser(username);
+      if (user == null) {
+        UI.DisplayError("User not found");
+        return;
+      }
+      Product product = GetProduct(productid);
+      if (product == null)
+      {
+        UI.DisplayError("Product not found");
+        return;
+      }
+      BuyProduct(user, product);
+    }
     void BuyProduct(User user, Product product)
     {
       ExecuteTransaction(new BuyTransaction(nextTransactionId++, user, product));
@@ -78,7 +93,6 @@ namespace OOPExam.Linesystem
     string ImportProducts(string fileaddress)
     {
       var tagRemover = new Regex("<.*>");
-      var splitter = new Regex(";");
       var addedProducts = new Dictionary<int, Product>();
 
       using (var catalog = new System.IO.StreamReader(fileaddress, true))
@@ -87,7 +101,7 @@ namespace OOPExam.Linesystem
         string rawData = catalog.ReadLine();
         while (rawData != null)
         {
-          string[] processedData = splitter.Split(tagRemover.Replace(rawData, ""));
+          string[] processedData = tagRemover.Replace(rawData, "").Split(';');
           string result = ValidateProduct(int.Parse(processedData[0]), processedData[1], int.Parse(processedData[2]));
           if (result != null) return String.Format("Product with id {0}: {1}", processedData[0], result);
           addedProducts.Add(int.Parse(processedData[0]), new Product(int.Parse(processedData[0]), processedData[1], int.Parse(processedData[2])));
