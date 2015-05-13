@@ -1,6 +1,0 @@
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\bin\Debug\OOPExam.exe.config
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\bin\Debug\OOPExam.exe
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\bin\Debug\OOPExam.pdb
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\obj\Debug\OOPExam.exe
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\obj\Debug\OOPExam.pdb
-C:\Users\Thomas Frandsen\Documents\GitHub\OOPExam\OOPExam\obj\Debug\OOPExam.csprojResolveAssemblyReference.cache
