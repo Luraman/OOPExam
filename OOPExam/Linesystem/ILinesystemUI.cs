@@ -6,8 +6,12 @@ using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  interface ILinesystemUI
+  public interface ILinesystemUI
   {
+    void Start();
+    void Link(LineSystem LS);
     void DisplayError(string error);
+    void DisplayUserBoughtProduct(string username, string productname, int productid);
+    void DisplayUserLowBalance(string username, int balance);
   }
 }

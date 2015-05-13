@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  public partial class Linesystem
+  public partial class LineSystem
   {
     public class User : IEqualityComparer<User>, IComparable<User>
     {

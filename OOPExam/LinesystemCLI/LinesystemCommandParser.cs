@@ -4,23 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using OOPExam.Linesystem;
 
-namespace OOPExam.Linesystem
+namespace OOPExam.LinesystemCLI
 {
-  public class LinesystemCommandParser
+  public class LinesystemCommandParser : ILinesystemCommandParser
   {
-    Linesystem linesystem;
+    public LinesystemCommandParser(LineSystem linesystem)
+    {
+      LS = linesystem;
+    }
+    public LineSystem LS;
 
     Regex quickbuy = new Regex(@"^[0-9a-z_]* [0-9]*$");
-    public void ParseInput(string command){
-      if (quickbuy.IsMatch(command)) {
-        string[] processedCommand = command.Split(' ');
-        linesystem.BuyProduct(processedCommand[0], int.Parse(processedCommand[1]));
+    public void ParseInput(string input){
+      if (quickbuy.IsMatch(input)) {
+        string[] processedCommand = input.Split(' ');
+        LS.BuyProduct(processedCommand[0], int.Parse(processedCommand[1]));
       }
-    }
-    public void DisplayError(string error)
-    {
-      throw new NotImplementedException();
     }
   }
 }

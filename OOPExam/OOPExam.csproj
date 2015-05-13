@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinesystemCLI\ILinesystemCommandParser.cs" />
     <Compile Include="LinesystemCLI\LinesystemCLI.cs" />
     <Compile Include="Linesystem\BuyTransaction.cs" />
     <Compile Include="Linesystem\ILinesystemUI.cs" />

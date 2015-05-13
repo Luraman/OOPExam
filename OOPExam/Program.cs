@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OOPExam.Linesystem;
+using OOPExam.LinesystemCLI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +12,8 @@ namespace OOPExam
   {
     static void Main(string[] args)
     {
+      LineSystem system = new LineSystem(new LineSystemCLI(), String.Format(@"{0}\products.csv", System.Environment.CurrentDirectory));
+      system.UI.Start();
     }
   }
 }

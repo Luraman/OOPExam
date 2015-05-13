@@ -8,16 +8,23 @@ using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  public partial class Linesystem
+  public partial class LineSystem
   {
-    public Linesystem(int transactioncount, int usercount) {
+    public LineSystem(ILinesystemUI ui, string catalogfileaddress, int transactioncount, int usercount) {
+      UI = ui;
+      UI.Link(this);
+      if (catalogfileaddress != null)
+      {
+        string result = ImportProducts(catalogfileaddress);
+        if (result != null) UI.DisplayError(result);
+      }
       nextTransactionId = transactioncount;
       nextUserId = usercount;
     }
-    public Linesystem() : this(0, 0) {}
+    public LineSystem(ILinesystemUI ui, string catalogfileaddress) : this(ui, catalogfileaddress, 0, 0) { }
 
-    ILinesystemUI UI;
-    System.IO.StreamWriter logfile = new System.IO.StreamWriter(@"Data\logfile.txt", true);
+    public ILinesystemUI UI;
+    System.IO.StreamWriter logfile = new System.IO.StreamWriter(String.Format(@"{0}\logfile.txt", System.Environment.CurrentDirectory));
     int nextTransactionId = 0;
     int nextUserId = 0;
     int nextProductId = 0;
@@ -28,21 +35,27 @@ namespace OOPExam.Linesystem
 
     string ValidatePurchase(User user, Product product)
     {
-      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return "Insufficient balance";
-      if (!product.Active) return "Product isn't available";
+      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return string.Format("{0} has insufficient balance", user.Username);
+      if (!product.Active) return string.Format("Product: \"{0} (id:{1})\" isn't available", product.Name, product.ID);
       return null;
     }
     public void BuyProduct(string username, int productid)
     {
       User user = GetUser(username);
       if (user == null) {
-        UI.DisplayError("User not found");
+        UI.DisplayError(string.Format("User: \"{0}\" wasn't found", user.Username));
         return;
       }
       Product product = GetProduct(productid);
       if (product == null)
       {
-        UI.DisplayError("Product not found");
+        UI.DisplayError(string.Format("Productid: {0} wasn't found", productid));
+        return;
+      }
+      string validation = ValidatePurchase(user, product);
+      if (validation != null)
+      {
+        UI.DisplayError(validation);
         return;
       }
       BuyProduct(user, product);
@@ -50,6 +63,8 @@ namespace OOPExam.Linesystem
     void BuyProduct(User user, Product product)
     {
       ExecuteTransaction(new BuyTransaction(nextTransactionId++, user, product));
+      UI.DisplayUserBoughtProduct(user.Username, product.Name, product.ID);
+      if (user.Balance <= 5000) UI.DisplayUserLowBalance(user.Username, user.Balance);
     }
     void AddCreditsToUser(User user, int amount)
     {
@@ -94,6 +109,7 @@ namespace OOPExam.Linesystem
     {
       var tagRemover = new Regex("<.*>");
       var addedProducts = new Dictionary<int, Product>();
+      int addedNextProductId = 0;
 
       using (var catalog = new System.IO.StreamReader(fileaddress, true))
       {
@@ -102,13 +118,15 @@ namespace OOPExam.Linesystem
         while (rawData != null)
         {
           string[] processedData = tagRemover.Replace(rawData, "").Split(';');
-          string result = ValidateProduct(int.Parse(processedData[0]), processedData[1], int.Parse(processedData[2]));
-          if (result != null) return String.Format("Product with id {0}: {1}", processedData[0], result);
+          string validation = ValidateProduct(int.Parse(processedData[0]), processedData[1], int.Parse(processedData[2]));
+          if (validation != null) return String.Format("Importing productcatalog failed. Product with id {0}: {1}", processedData[0], validation);
           addedProducts.Add(int.Parse(processedData[0]), new Product(int.Parse(processedData[0]), processedData[1], int.Parse(processedData[2])));
+          if (int.Parse(processedData[0]) >= addedNextProductId) addedNextProductId = int.Parse(processedData[0]) + 1;
           rawData = catalog.ReadLine();
         }
       }
       Products.Concat(addedProducts);
+      if (addedNextProductId > nextProductId) nextProductId = addedNextProductId;
       return null;
     }
   }

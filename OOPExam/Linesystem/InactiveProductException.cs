@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OOPExam.Linesystem
 {
-  public partial class Linesystem
+  public partial class LineSystem
   {
     class InactiveProductException : Exception
     {
