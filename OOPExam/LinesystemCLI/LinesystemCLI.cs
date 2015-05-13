@@ -7,18 +7,25 @@ using OOPExam.Linesystem;
 
 namespace OOPExam.LinesystemCLI
 {
-  class LineSystemCLI : ILinesystemUI
+  class LineSystemCLI : ILineSystemUI
   {
+    bool running = true;
     public LineSystemCLI() {}
     LinesystemCommandParser LCP;
     public void Start()
     {
-      bool running = true;
       while (running)
       {
         string input = Console.ReadLine();
-        LCP.ParseInput(input);
+        if(!LCP.ParseInput(input)) DisplayError("Invalid input");
       }
+    }
+
+    public void Close()
+    {
+      Console.WriteLine("System successfully shutdown - Press any key to exit");
+      Console.ReadKey(false);
+      running = false;
     }
 
     public void DisplayError(string error)
@@ -41,6 +48,13 @@ namespace OOPExam.LinesystemCLI
     public void Link(LineSystem LS)
     {
       LCP = new LinesystemCommandParser(LS);
+    }
+
+
+    public void DisplayUserInfo(string username, string firstname, string lastname, int balance, List<string> latesttransactions)
+    {
+      Console.Write("Username: {0}\nFullname: {1} {2}\nBalance: {3}\nLastest transactions:\n", username, firstname, lastname, balance);
+      latesttransactions.ForEach(x => Console.WriteLine(x));
     }
   }
 }

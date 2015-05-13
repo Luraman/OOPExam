@@ -12,7 +12,7 @@ namespace OOPExam
   {
     static void Main(string[] args)
     {
-      LineSystem system = new LineSystem(new LineSystemCLI(), String.Format(@"{0}\products.csv", System.Environment.CurrentDirectory));
+      LineSystem system = new LineSystem(new LineSystemCLI(), null);
       system.UI.Start();
     }
   }

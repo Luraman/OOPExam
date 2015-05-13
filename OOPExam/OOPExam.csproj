@@ -41,14 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LinesystemCLI\ILinesystemCommandParser.cs" />
     <Compile Include="LinesystemCLI\LinesystemCLI.cs" />
     <Compile Include="Linesystem\BuyTransaction.cs" />
-    <Compile Include="Linesystem\ILinesystemUI.cs" />
+    <Compile Include="Linesystem\ILineSystemUI.cs" />
     <Compile Include="Linesystem\InsertCashTransaction.cs" />
     <Compile Include="Linesystem\InactiveProductException.cs" />
     <Compile Include="Linesystem\InsufficientCreditsException.cs" />
-    <Compile Include="Linesystem\Linesystem.cs" />
+    <Compile Include="Linesystem\LineSystem.cs" />
     <Compile Include="LinesystemCLI\LinesystemCommandParser.cs" />
     <Compile Include="Linesystem\Product.cs" />
     <Compile Include="Linesystem\SeasonalProduct.cs" />

@@ -10,7 +10,7 @@ namespace OOPExam.Linesystem
 {
   public partial class LineSystem
   {
-    public LineSystem(ILinesystemUI ui, string catalogfileaddress, int transactioncount, int usercount) {
+    public LineSystem(ILineSystemUI ui, string catalogfileaddress, int transactioncount, int usercount) {
       UI = ui;
       UI.Link(this);
       if (catalogfileaddress != null)
@@ -21,9 +21,9 @@ namespace OOPExam.Linesystem
       nextTransactionId = transactioncount;
       nextUserId = usercount;
     }
-    public LineSystem(ILinesystemUI ui, string catalogfileaddress) : this(ui, catalogfileaddress, 0, 0) { }
+    public LineSystem(ILineSystemUI ui, string catalogfileaddress) : this(ui, catalogfileaddress, 0, 0) { }
 
-    public ILinesystemUI UI;
+    public ILineSystemUI UI;
     System.IO.StreamWriter logfile = new System.IO.StreamWriter(String.Format(@"{0}\logfile.txt", System.Environment.CurrentDirectory));
     int nextTransactionId = 0;
     int nextUserId = 0;
@@ -35,23 +35,16 @@ namespace OOPExam.Linesystem
 
     string ValidatePurchase(User user, Product product)
     {
-      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return string.Format("{0} has insufficient balance", user.Username);
+      if (!product.CanBeBoughtOnCredit && user.Balance < product.Price) return string.Format("{0} has insufficient balance. ({1} credits required)", user.Username, product.Price);
       if (!product.Active) return string.Format("Product: \"{0} (id:{1})\" isn't available", product.Name, product.ID);
       return null;
     }
     public void BuyProduct(string username, int productid)
     {
       User user = GetUser(username);
-      if (user == null) {
-        UI.DisplayError(string.Format("User: \"{0}\" wasn't found", user.Username));
-        return;
-      }
+      if (user == null) return;
       Product product = GetProduct(productid);
-      if (product == null)
-      {
-        UI.DisplayError(string.Format("Productid: {0} wasn't found", productid));
-        return;
-      }
+      if (product == null) return;
       string validation = ValidatePurchase(user, product);
       if (validation != null)
       {
@@ -64,7 +57,17 @@ namespace OOPExam.Linesystem
     {
       ExecuteTransaction(new BuyTransaction(nextTransactionId++, user, product));
       UI.DisplayUserBoughtProduct(user.Username, product.Name, product.ID);
+      CheckForLowBalance(user);
+    }
+    void CheckForLowBalance(User user)
+    {
       if (user.Balance <= 5000) UI.DisplayUserLowBalance(user.Username, user.Balance);
+    }
+    public void AddCreditsToUser(string username, int amount)
+    {
+      User user = GetUser(username);
+      if (user == null) return;
+      AddCreditsToUser(user, amount);
     }
     void AddCreditsToUser(User user, int amount)
     {
@@ -78,11 +81,15 @@ namespace OOPExam.Linesystem
     }
     Product GetProduct(int id)
     {
-      return Products.ElementAtOrDefault(id).Value;
+      Product product = Products.ElementAtOrDefault(id).Value;
+      if (product == null) UI.DisplayError(string.Format("Productid: {0} wasn't found", id));
+      return product;
     }
     User GetUser(string username)
     {
-      return Users.Select(x => x.Value).FirstOrDefault(x => x.Username == username);
+      User user = Users.Select(x => x.Value).FirstOrDefault(x => x.Username == username);
+      if (user == null) UI.DisplayError(string.Format("User: \"{0}\" wasn't found", username));
+      return user;
     }
     List<Transaction> GetUserTransactions(User user)
     {
@@ -99,7 +106,7 @@ namespace OOPExam.Linesystem
     }
     void AddProduct(int id, string name, int price) {
       Products.Add(id, new Product(id, name, price));
-      nextProductId = id + 1;
+      if (id >= nextProductId) nextProductId = id + 1;
     }
     void AddProduct(string name, int price)
     {
@@ -128,6 +135,49 @@ namespace OOPExam.Linesystem
       Products.Concat(addedProducts);
       if (addedNextProductId > nextProductId) nextProductId = addedNextProductId;
       return null;
+    }
+    public void GetUserInfo(string username)
+    {
+      User user = GetUser(username);
+      if (user == null) return;
+      UI.DisplayUserInfo(user.Username, user.Firstname, user.Lastname, user.Balance,
+        Transactions.Select(x => x.Value)
+        .Where(x => x.User == user)
+        .Take(10)
+        .Select(x => x.ToString())
+        .ToList()
+        );
+      CheckForLowBalance(user);
+    }
+    public void BuyMultipleProduct(string username, int productid, int multiple)
+    {
+      User user = GetUser(username);
+      if (user == null) return;
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      if (user.Balance < product.Price * multiple)
+      {
+        UI.DisplayError(string.Format("{0} has insufficient balance ({1} credits required)", user.Username, product.Price * multiple));
+        return;
+      }
+      for (int transactionCount = 0; transactionCount < multiple; transactionCount++) BuyProduct(user, product);
+    }
+    public void Close()
+    {
+      logfile.Close();
+      UI.Close();
+    }
+    public void SetProductActive(int productid, bool active)
+    {
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      product.Active = active;
+    }
+    public void SetProductCredit(int productid, bool active)
+    {
+      Product product = GetProduct(productid);
+      if (product == null) return;
+      product.CanBeBoughtOnCredit = active;
     }
   }
 }
